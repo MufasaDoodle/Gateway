@@ -36,7 +36,7 @@ public class LorawanSocket extends WebSocketClient
     @Override
     public void onClose(int i, String s, boolean b)
     {
-        logger.info("Closed connection");
+        logger.info("Closed connection by " + (b ? "remote peer" : "us") + "\nCode: " + i + "\nReason: " + s);
     }
 
     @Override

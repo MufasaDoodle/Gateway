@@ -1,12 +1,5 @@
 package main.java.com.sep4.lorawanwebsocket;
 
-import org.glassfish.tyrus.client.ClientManager;
-
-import javax.websocket.ClientEndpoint;
-import javax.websocket.ContainerProvider;
-import javax.websocket.DeploymentException;
-import javax.websocket.WebSocketContainer;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.concurrent.CountDownLatch;
