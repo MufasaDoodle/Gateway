@@ -30,6 +30,9 @@ public class LorawanSocket extends WebSocketClient
 
     @Override
     public void onMessage(String message){
+        // we don't know how to handle messages yet, but I assume that we check the string message here for readings
+        // and make a call to the database
+
         logger.info("Received message: \n" + message);
     }
 

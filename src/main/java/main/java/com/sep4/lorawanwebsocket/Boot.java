@@ -10,8 +10,7 @@ public class Boot
 
     public static void main(String[] args) throws URISyntaxException
     {
-        latch = new CountDownLatch(1);
-
+        latch = new CountDownLatch(5);
         try
         {
             LorawanSocket client = new LorawanSocket(new URI("ws://IP:XXXX"));
@@ -24,3 +23,4 @@ public class Boot
         }
     }
 }
+
