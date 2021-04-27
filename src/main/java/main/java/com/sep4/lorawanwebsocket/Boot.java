@@ -11,10 +11,11 @@ public class Boot
     public static void main(String[] args) throws URISyntaxException
     {
         latch = new CountDownLatch(5);
+        //LorawanSocket client = new LorawanSocket(new URI("ws://IP:XXXX"));
+        //client.connect();
         try
         {
-            LorawanSocket client = new LorawanSocket(new URI("ws://IP:XXXX"));
-            client.connect();
+            SocketClient client = new SocketClient("wss://iotnet.cibicom.dk/app?token=vnoTugAAABFpb3RuZXQuY2liaWNvbS5ka0q3npoy3giwU6BP_fKjb5U=");
             latch.await();
         }
         catch (InterruptedException e)
