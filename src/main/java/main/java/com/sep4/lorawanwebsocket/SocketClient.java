@@ -1,5 +1,6 @@
 package main.java.com.sep4.lorawanwebsocket;
 
+import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -80,6 +81,11 @@ public class SocketClient implements WebSocket.Listener
             e.printStackTrace();
         }
         System.out.println(indented);
+        Gson gson = new Gson();
+        Message message = gson.fromJson(indented, Message.class); // no idea if this is how we do it
+
+        System.out.println(message.toString());
+
         webSocket.request(1);
         return new CompletableFuture().completedFuture("onText() completed.").thenAccept(System.out::println);
     }

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+///DEPRECATED. USE SocketClient INSTEAD
 public class LorawanSocket extends WebSocketClient
 {
     Logger logger;
