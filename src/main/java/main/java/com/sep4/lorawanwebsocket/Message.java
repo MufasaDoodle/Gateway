@@ -8,10 +8,9 @@ public class Message
     boolean ack;
     int fcnt;
     int port;
-    String encdata;
     String data;
 
-    public Message(String cmd, String EUI, int ts, boolean ack, int fcnt, int port, String encdata, String data)
+    public Message(String cmd, String EUI, int ts, boolean ack, int fcnt, int port, String data)
     {
         this.cmd = cmd;
         this.EUI = EUI;
@@ -19,7 +18,6 @@ public class Message
         this.ack = ack;
         this.fcnt = fcnt;
         this.port = port;
-        this.encdata = encdata;
         this.data = data;
     }
 
@@ -81,16 +79,6 @@ public class Message
     public void setPort(int port)
     {
         this.port = port;
-    }
-
-    public String getEncdata()
-    {
-        return encdata;
-    }
-
-    public void setEncdata(String encdata)
-    {
-        this.encdata = encdata;
     }
 
     public String getData()
