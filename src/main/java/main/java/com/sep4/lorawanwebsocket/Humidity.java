@@ -3,17 +3,17 @@ package main.java.com.sep4.lorawanwebsocket;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-public class Temperature
+public class Humidity
 {
     int id;
-    float temp;
+    float percentage;
     Date date;
     Timestamp time;
     int gymId;
 
-    public Temperature(float temp, Date date, Timestamp time)
+    public Humidity(float percentage, Date date, Timestamp time)
     {
-        this.temp = temp;
+        this.percentage = percentage;
         this.date = date;
         this.time = time;
         gymId = 0;
@@ -29,14 +29,14 @@ public class Temperature
         this.id = id;
     }
 
-    public float getTemp()
+    public float getPercentage()
     {
-        return temp;
+        return percentage;
     }
 
-    public void setTemp(float temp)
+    public void setPercentage(float percentage)
     {
-        this.temp = temp;
+        this.percentage = percentage;
     }
 
     public Date getDate()
@@ -72,9 +72,9 @@ public class Temperature
     @Override
     public String toString()
     {
-        return "Temperature{" +
+        return "Humidity{" +
                 "id=" + id +
-                ", temp=" + temp +
+                ", percentage=" + percentage +
                 ", date=" + date.toString() +
                 ", time=" + time.toString() +
                 ", gymId=" + gymId +

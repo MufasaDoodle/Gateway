@@ -4,13 +4,17 @@ public class Message
 {
     String cmd;
     String EUI;
-    int ts;
+    long ts;
     boolean ack;
     int fcnt;
     int port;
     String data;
+    long freq;
+    String dr;
+    int rssi;
+    float snr;
 
-    public Message(String cmd, String EUI, int ts, boolean ack, int fcnt, int port, String data)
+    public Message(String cmd, String EUI, long ts, boolean ack, int fcnt, int port, String data, long freq, String dr, int rssi, float snr)
     {
         this.cmd = cmd;
         this.EUI = EUI;
@@ -19,6 +23,50 @@ public class Message
         this.fcnt = fcnt;
         this.port = port;
         this.data = data;
+        this.freq = freq;
+        this.dr = dr;
+        this.rssi = rssi;
+        this.snr = snr;
+    }
+
+    public long getFreq()
+    {
+        return freq;
+    }
+
+    public void setFreq(long freq)
+    {
+        this.freq = freq;
+    }
+
+    public String getDr()
+    {
+        return dr;
+    }
+
+    public void setDr(String dr)
+    {
+        this.dr = dr;
+    }
+
+    public int getRssi()
+    {
+        return rssi;
+    }
+
+    public void setRssi(int rssi)
+    {
+        this.rssi = rssi;
+    }
+
+    public float getSnr()
+    {
+        return snr;
+    }
+
+    public void setSnr(float snr)
+    {
+        this.snr = snr;
     }
 
     public String getCmd()
@@ -41,12 +89,12 @@ public class Message
         this.EUI = EUI;
     }
 
-    public int getTs()
+    public long getTs()
     {
         return ts;
     }
 
-    public void setTs(int ts)
+    public void setTs(long ts)
     {
         this.ts = ts;
     }
@@ -90,4 +138,6 @@ public class Message
     {
         this.data = data;
     }
+
+
 }

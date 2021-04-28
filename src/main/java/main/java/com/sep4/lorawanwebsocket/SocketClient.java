@@ -8,6 +8,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -81,10 +84,33 @@ public class SocketClient implements WebSocket.Listener
             e.printStackTrace();
         }
         System.out.println(indented);
+
         Gson gson = new Gson();
         Message message = gson.fromJson(indented, Message.class); // no idea if this is how we do it
 
-        System.out.println(message.toString());
+        if(message.cmd.equals("rx")){
+            //call a thing on the database
+            String humHex = message.data.substring(0,4);
+            String tempHex = message.data.substring(4,8);
+            String co2Hex = message.data.substring(8,12);
+            Timestamp ts = new Timestamp(message.ts);
+            Date date = new Date(message.ts);
+
+            Temperature temp = new Temperature(Float.parseFloat(ConvHelper.convertHexToDecimal(tempHex)), date, ts);
+            Humidity hum = new Humidity(Float.parseFloat(ConvHelper.convertHexToDecimal(humHex)), date, ts);
+            CO2 co2 = new CO2(Float.parseFloat(ConvHelper.convertHexToDecimal(co2Hex)), date, ts);
+            System.out.println(temp.toString());
+            System.out.println(hum.toString());
+            System.out.println(co2.toString());
+            try
+            {
+                MSSQLDatabase.getInstance().insertTemp(temp);
+            }
+            catch (SQLException throwables)
+            {
+                throwables.printStackTrace();
+            }
+        }
 
         webSocket.request(1);
         return new CompletableFuture().completedFuture("onText() completed.").thenAccept(System.out::println);

@@ -3,17 +3,17 @@ package main.java.com.sep4.lorawanwebsocket;
 import java.sql.Date;
 import java.sql.Timestamp;
 
-public class Temperature
+public class CO2
 {
     int id;
-    float temp;
+    float co2level;
     Date date;
     Timestamp time;
     int gymId;
 
-    public Temperature(float temp, Date date, Timestamp time)
+    public CO2(float co2level, Date date, Timestamp time)
     {
-        this.temp = temp;
+        this.co2level = co2level;
         this.date = date;
         this.time = time;
         gymId = 0;
@@ -29,14 +29,14 @@ public class Temperature
         this.id = id;
     }
 
-    public float getTemp()
+    public float getCo2level()
     {
-        return temp;
+        return co2level;
     }
 
-    public void setTemp(float temp)
+    public void setCo2level(float co2level)
     {
-        this.temp = temp;
+        this.co2level = co2level;
     }
 
     public Date getDate()
@@ -72,9 +72,9 @@ public class Temperature
     @Override
     public String toString()
     {
-        return "Temperature{" +
+        return "CO2{" +
                 "id=" + id +
-                ", temp=" + temp +
+                ", co2level=" + co2level +
                 ", date=" + date.toString() +
                 ", time=" + time.toString() +
                 ", gymId=" + gymId +
