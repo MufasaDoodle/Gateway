@@ -2,6 +2,10 @@ package main.java.com.sep4.lorawanwebsocket;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.concurrent.CountDownLatch;
 
 public class Boot

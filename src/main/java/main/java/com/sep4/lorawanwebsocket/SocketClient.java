@@ -10,6 +10,7 @@ import java.net.http.WebSocket;
 import java.nio.ByteBuffer;
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -93,18 +94,18 @@ public class SocketClient implements WebSocket.Listener
             String humHex = message.data.substring(0,4);
             String tempHex = message.data.substring(4,8);
             String co2Hex = message.data.substring(8,12);
-            Timestamp ts = new Timestamp(message.ts);
+            Time t = new Time(message.ts);
             Date date = new Date(message.ts);
 
-            Temperature temp = new Temperature(Float.parseFloat(ConvHelper.convertHexToDecimal(tempHex)), date, ts);
-            Humidity hum = new Humidity(Float.parseFloat(ConvHelper.convertHexToDecimal(humHex)), date, ts);
-            CO2 co2 = new CO2(Float.parseFloat(ConvHelper.convertHexToDecimal(co2Hex)), date, ts);
-            System.out.println(temp.toString());
-            System.out.println(hum.toString());
-            System.out.println(co2.toString());
+            float temp = Float.parseFloat(ConvHelper.convertHexToDecimal(tempHex));
+            float hum = Float.parseFloat(ConvHelper.convertHexToDecimal(humHex));
+            float co2 = Float.parseFloat(ConvHelper.convertHexToDecimal(co2Hex));
+
+            Measurement measurement = new Measurement(1,t,date,temp, hum, co2);
+
             try
             {
-                MSSQLDatabase.getInstance().insertTemp(temp);
+                MSSQLDatabase.getInstance().insertMeasurement(measurement);
             }
             catch (SQLException throwables)
             {
