@@ -13,7 +13,7 @@ public class MSSQLDatabase
     private MSSQLDatabase() throws SQLException{
         DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
         //connectionUrl = "jdbc:sqlserver://localhost;databaseName=SEP4DB;integratedSecurity=true;";
-        connectionUrl = "jdbc:sqlserver://sep4db.ckcr1bq2ybz9.us-east-1.rds.amazonaws.com";
+        connectionUrl = "jdbc:sqlserver://sep4db.ckcr1bq2ybz9.us-east-1.rds.amazonaws.com:1433;databaseName=SEP4DB;";
     }
 
     public static synchronized MSSQLDatabase getInstance() throws SQLException{
@@ -26,15 +26,12 @@ public class MSSQLDatabase
     }
 
     private Connection getConnection() throws SQLException{
-        return DriverManager.getConnection(connectionUrl);
+        return DriverManager.getConnection(connectionUrl, "admin", "Cuharuje40");
     }
 
     void insertMeasurement(Measurement measurement){
         CallableStatement cstmt;
-        System.out.println(measurement.toString());
-        System.out.println(new Timestamp(1620145112));
-        System.out.println(new Time(1620145112));
-        System.out.println(new Date(1620145112));
+        System.out.println(measurement.toString()); //TODO remove
 
         try{
             cstmt = getConnection().prepareCall("{call dbo.spInsert_Measurement(?,?,?,?,?,?)}");
