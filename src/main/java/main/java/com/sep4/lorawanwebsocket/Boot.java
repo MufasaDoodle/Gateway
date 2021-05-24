@@ -22,6 +22,9 @@ public class Boot
             SocketClient client = new SocketClient("wss://iotnet.cibicom.dk/app?token=vnoTugAAABFpb3RuZXQuY2liaWNvbS5ka0q3npoy3giwU6BP_fKjb5U=");
             //Measurement test = new Measurement(1, new Time(1L), new Date(1L), 0.5f, 0.5f, 0.5f);
             //MSSQLDatabase.getInstance().insertMeasurement(test);
+
+            //MSSQLDatabase.getInstance().getStatesHEX();
+
             latch.await();
         }
         catch (InterruptedException e)

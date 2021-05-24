@@ -26,7 +26,7 @@ public class MSSQLDatabase
     }
 
     private Connection getConnection() throws SQLException{
-        return DriverManager.getConnection(connectionUrl, "admin", "Cuharuje40");
+        return DriverManager.getConnection(connectionUrl, "admin", "sep4db2020");
     }
 
     void insertMeasurement(Measurement measurement){
@@ -50,6 +50,143 @@ public class MSSQLDatabase
             Logger.getLogger(MSSQLDatabase.class.getName()).log(Level.SEVERE, null, throwables);
         }
     }
+
+    String getStatesHEX(){
+        CallableStatement cstmt;
+
+        try{
+            //AC
+            cstmt = getConnection().prepareCall("{call dbo.spAC_GetByGymID(?)}");
+
+            cstmt.setInt("Gym_ID", 1);
+
+            ResultSet rs = cstmt.executeQuery();
+
+            int acStateInt = -1;
+
+            while(rs.next()){
+                acStateInt = rs.getInt("state");
+            }
+
+            boolean acState;
+
+            if(acStateInt == 0){
+                acState = false;
+            }
+            else {
+                acState = true;
+            }
+
+
+            //DEHUM
+            cstmt = getConnection().prepareCall("{call dbo.spDehumidifier_GetByGymID(?)}");
+
+            cstmt.setInt("Gym_ID", 1);
+
+            rs = cstmt.executeQuery();
+
+            int deHumStateInt = -1;
+
+            while(rs.next()){
+                deHumStateInt = rs.getInt("state");
+            }
+
+            boolean deHumState;
+
+            if(deHumStateInt == 0){
+                deHumState = false;
+            }
+            else {
+                deHumState = true;
+            }
+
+
+            //HUM
+            cstmt = getConnection().prepareCall("{call dbo.spHumidifier_GetByGymID(?)}");
+
+            cstmt.setInt("Gym_ID", 1);
+
+            rs = cstmt.executeQuery();
+
+            int humStateInt = -1;
+
+            while(rs.next()){
+                humStateInt = rs.getInt("state");
+            }
+
+            boolean humState;
+
+            if(humStateInt == 0){
+                humState = false;
+            }
+            else {
+                humState = true;
+            }
+
+            //WINDOW
+            cstmt = getConnection().prepareCall("{call dbo.spWindow_GetByGymID(?)}");
+
+            cstmt.setInt("Gym_ID", 1);
+
+            rs = cstmt.executeQuery();
+
+            int windowStateInt = -1;
+
+            while(rs.next()){
+                windowStateInt = rs.getInt("state");
+            }
+
+            boolean windowState;
+
+            if(windowStateInt == 0){
+                windowState = false;
+            }
+            else {
+                windowState = true;
+            }
+
+            //creating HEX
+            String hexString = "";
+
+            if(acState){
+                hexString += "01";
+            }
+            else {
+                hexString += "00";
+            }
+
+            if(deHumState){
+                hexString += "01";
+            }
+            else {
+                hexString += "00";
+            }
+
+            if(humState){
+                hexString += "01";
+            }
+            else {
+                hexString += "00";
+            }
+
+            if(windowState){
+                hexString += "01";
+            }
+            else {
+                hexString += "00";
+            }
+
+            return hexString;
+        }
+        catch (SQLException throwables)
+        {
+            Logger.getLogger(MSSQLDatabase.class.getName()).log(Level.SEVERE, null, throwables);
+        }
+
+        return null;
+    }
+
+
 
     void insertTemp(Temperature temp){
 

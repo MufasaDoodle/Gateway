@@ -11,7 +11,6 @@ import java.nio.ByteBuffer;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -87,25 +86,30 @@ public class SocketClient implements WebSocket.Listener
         System.out.println(indented);
 
         Gson gson = new Gson();
-        Message message = gson.fromJson(indented, Message.class); // no idea if this is how we do it
+        Message message = gson.fromJson(indented, Message.class);
 
         if(message.cmd.equals("rx")){
-            //call a thing on the database
             String humHex = message.data.substring(0,4);
             String tempHex = message.data.substring(4,8);
             String co2Hex = message.data.substring(8,12);
             Time t = new Time(message.ts);
+            Time t2 = new Time(t.getHours(), t.getMinutes(), 0);
+            //using deprecated methods because the other solutions are even worse
+            //reason for doing this is that the data team doesn't want seconds or milliseconds
+            System.out.println(t2.toString());
             Date date = new Date(message.ts);
 
             float temp = Float.parseFloat(ConvHelper.convertHexToDecimal(tempHex));
             float hum = Float.parseFloat(ConvHelper.convertHexToDecimal(humHex));
             float co2 = Float.parseFloat(ConvHelper.convertHexToDecimal(co2Hex));
 
-            Measurement measurement = new Measurement(1,t,date,temp, hum, co2);
+            Measurement measurement = new Measurement(1,t2,date,temp, hum, co2);
 
             try
             {
                 MSSQLDatabase.getInstance().insertMeasurement(measurement);
+
+                sendStates();
             }
             catch (SQLException throwables)
             {
@@ -115,5 +119,32 @@ public class SocketClient implements WebSocket.Listener
 
         webSocket.request(1);
         return new CompletableFuture().completedFuture("onText() completed.").thenAccept(System.out::println);
+    }
+
+    private void sendStates()
+    {
+        try
+        {
+            String hex = MSSQLDatabase.getInstance().getStatesHEX();
+
+            if(hex == null){
+                return;
+            }
+
+            //TODO get the right port number
+            DownLinkMessage message = new DownLinkMessage("tx", "0004A30B00219CB5", 2, false, hex);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(message);
+
+            //DEBUG
+            System.out.println(json);
+
+            sendDownLink(json);
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
     }
 }
