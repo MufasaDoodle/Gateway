@@ -187,4 +187,192 @@ public class MSSQLDatabase
 
         return null;
     }
+
+    public void checkTemperature(float temperature)
+    {
+
+        CallableStatement cstmt;
+
+        try{
+            cstmt = getConnection().prepareCall("{call dbo.spAC_GetByGymID(?)}");
+
+            cstmt.setInt("Gym_ID", 1);
+
+            ResultSet rs = cstmt.executeQuery();
+
+            int isOn = 0;
+            float target = -1f;
+
+            while(rs.next()){
+                isOn = rs.getInt("automation");
+                target = rs.getFloat("TargetTemperature");
+            }
+
+            //check if automation settings are off and we just bail out
+            if(isOn != 1){
+                return;
+            }
+
+            if(temperature > target){
+                System.out.println("Temperature is too high");
+                changeACState(true);
+            }
+            else if(temperature < target){
+                System.out.println("Temperature is low");
+                changeACState(false);
+            }
+        }
+        catch (SQLException throwables)
+        {
+            Logger.getLogger(MSSQLDatabase.class.getName()).log(Level.SEVERE, null, throwables);
+        }
+
+    }
+
+    public void checkCO2(float co2Level)
+    {
+        CallableStatement cstmt;
+
+        try{
+            cstmt = getConnection().prepareCall("{call dbo.spWindow_GetByGymID(?)}");
+
+            cstmt.setInt("Gym_ID", 1);
+
+            ResultSet rs = cstmt.executeQuery();
+
+            int isOn = 0;
+            float target = -1f;
+
+            while(rs.next()){
+                isOn = rs.getInt("automation");
+                target = rs.getFloat("TargetCO2Level");
+            }
+
+            //check if automation settings are off and we just bail out
+            if(isOn != 1){
+                return;
+            }
+
+            if(co2Level > target){
+                System.out.println("CO2 too high");
+                changeWindowState(true);
+            }
+            else if(co2Level < target){
+                System.out.println("CO2 is low");
+                changeWindowState(false);
+            }
+        }
+        catch (SQLException throwables)
+        {
+            Logger.getLogger(MSSQLDatabase.class.getName()).log(Level.SEVERE, null, throwables);
+        }
+    }
+
+    public void checkHumidity(float humidity)
+    {
+        CallableStatement cstmt;
+
+        try{
+            cstmt = getConnection().prepareCall("{call dbo.spHumidifier_GetByGymID(?)}");
+
+            cstmt.setInt("Gym_ID", 1);
+
+            ResultSet rs = cstmt.executeQuery();
+
+            int isOn = 0;
+            float target = -1f;
+
+            while(rs.next()){
+                isOn = rs.getInt("automation");
+                target = rs.getFloat("TargetHumidity");
+            }
+
+            //check if automation settings are off and we just bail out
+            if(isOn != 1){
+                return;
+            }
+
+            if(humidity < target){
+                System.out.println("Humidity too low");
+                changeHumState(true);
+            }
+            else {
+                System.out.println("Humidity is fine");
+                changeHumState(false);
+            }
+        }
+        catch (SQLException throwables)
+        {
+            Logger.getLogger(MSSQLDatabase.class.getName()).log(Level.SEVERE, null, throwables);
+        }
+    }
+
+    private void changeACState(boolean isOn){
+        CallableStatement cstmt;
+
+        try{
+            if(isOn){
+                System.out.println("Setting AC to on");
+                cstmt = getConnection().prepareCall("{call dbo.spTurnOn_AC(?)}");
+            }
+            else {
+                System.out.println("Setting AC to off");
+                cstmt = getConnection().prepareCall("{call dbo.spTurnOff_AC(?)}");
+            }
+
+            cstmt.setInt("Gym_ID", 1);
+
+            cstmt.execute();
+        }
+        catch (SQLException throwables)
+        {
+            Logger.getLogger(MSSQLDatabase.class.getName()).log(Level.SEVERE, null, throwables);
+        }
+    }
+
+    private void changeHumState(boolean isOn){
+        CallableStatement cstmt;
+
+        try{
+            if(isOn){
+                System.out.println("Setting humidifier to on");
+                cstmt = getConnection().prepareCall("{call dbo.spTurnOn_Humidifier(?)}");
+            }
+            else {
+                System.out.println("Setting humidifier to off");
+                cstmt = getConnection().prepareCall("{call dbo.spTurnOff_Humidifier(?)}");
+            }
+
+            cstmt.setInt("Gym_ID", 1);
+
+            cstmt.execute();
+        }
+        catch (SQLException throwables)
+        {
+            Logger.getLogger(MSSQLDatabase.class.getName()).log(Level.SEVERE, null, throwables);
+        }
+    }
+
+    private void changeWindowState(boolean isOpen){
+        CallableStatement cstmt;
+
+        try{
+            if(isOpen){
+                System.out.println("Setting window to on");
+                cstmt = getConnection().prepareCall("{call dbo.spTurnOn_Window(?)}");
+            }
+            else {
+                System.out.println("Setting window to off");
+                cstmt = getConnection().prepareCall("{call dbo.spTurnOff_Window(?)}");
+            }
+
+            cstmt.setInt("Gym_ID", 1);
+
+            cstmt.execute();
+        }
+        catch (SQLException throwables)
+        {
+            Logger.getLogger(MSSQLDatabase.class.getName()).log(Level.SEVERE, null, throwables);
+        }
+    }
 }

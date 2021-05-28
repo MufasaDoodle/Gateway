@@ -113,6 +113,9 @@ public class SocketClient implements WebSocket.Listener
                 //insert measurement into the database
                 MSSQLDatabase.getInstance().insertMeasurement(measurement);
 
+                //checks all the automation settings and changes states according to the measurement we just received
+                handleAutomation(measurement);
+
                 //Will try to transmit the states of the AC, humidifier, dehumidifier and window to the hardware
                 sendStates();
             }
@@ -124,6 +127,35 @@ public class SocketClient implements WebSocket.Listener
 
         webSocket.request(1);
         return new CompletableFuture().completedFuture("onText() completed.").thenAccept(System.out::println);
+    }
+
+    public void testThingy(Measurement measurement){
+        try
+        {
+            //insert measurement into the database
+            //MSSQLDatabase.getInstance().insertMeasurement(measurement);
+
+            //checks all the automation settings and changes states according to the measurement we just received
+            handleAutomation(measurement);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void handleAutomation(Measurement measurement)
+    {
+        try
+        {
+            MSSQLDatabase.getInstance().checkTemperature(measurement.getTemperature());
+            MSSQLDatabase.getInstance().checkCO2(measurement.getCO2Level());
+            MSSQLDatabase.getInstance().checkHumidity(measurement.getHumidity());
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
     }
 
     private void sendStates()

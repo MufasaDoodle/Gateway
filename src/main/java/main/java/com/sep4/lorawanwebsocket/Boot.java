@@ -18,7 +18,8 @@ public class Boot
         try
         {
             SocketClient client = new SocketClient("wss://iotnet.cibicom.dk/app?token=vnoTugAAABFpb3RuZXQuY2liaWNvbS5ka0q3npoy3giwU6BP_fKjb5U=");
-            //Measurement test = new Measurement(1, new Time(1324234L), new Date(1324234L), 0.5f, 0.5f, 0.5f);
+            //Measurement test = new Measurement(1, new Time(1324234L), new Date(1324234L), 20f, 46f, 690f);
+            //client.testThingy(test);
             //MSSQLDatabase.getInstance().insertMeasurement(test);
 
             //MSSQLDatabase.getInstance().getStatesHEX();
