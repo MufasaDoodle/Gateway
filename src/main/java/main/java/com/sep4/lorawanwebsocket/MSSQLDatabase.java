@@ -12,15 +12,14 @@ public class MSSQLDatabase
 
     private MSSQLDatabase() throws SQLException{
         DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
-        //connectionUrl = "jdbc:sqlserver://localhost;databaseName=SEP4DB;integratedSecurity=true;";
-        connectionUrl = "jdbc:sqlserver://sep4db.ckcr1bq2ybz9.us-east-1.rds.amazonaws.com:1433;databaseName=SEP4DB;";
+        //connectionUrl = "jdbc:sqlserver://localhost;databaseName=SEP4DB;integratedSecurity=true;"; use this if you want to test locally
+        connectionUrl = "jdbc:sqlserver://sep4db.ckcr1bq2ybz9.us-east-1.rds.amazonaws.com:1433;databaseName=SEP4DB;"; //AWS web database server
     }
 
     public static synchronized MSSQLDatabase getInstance() throws SQLException{
         if(instance == null){
             instance = new MSSQLDatabase();
         }
-
 
         return instance;
     }
@@ -30,8 +29,9 @@ public class MSSQLDatabase
     }
 
     void insertMeasurement(Measurement measurement){
+
         CallableStatement cstmt;
-        System.out.println(measurement.toString()); //TODO remove
+        System.out.println(measurement.toString()); //for debugging purposes TODO remove
 
         try{
             cstmt = getConnection().prepareCall("{call dbo.spInsert_Measurement(?,?,?,?,?,?)}");
@@ -51,6 +51,7 @@ public class MSSQLDatabase
         }
     }
 
+    // This method returns the states of the AC, humidifier, dehumidifer and window from the database as hex
     String getStatesHEX(){
         CallableStatement cstmt;
 
@@ -62,6 +63,7 @@ public class MSSQLDatabase
 
             ResultSet rs = cstmt.executeQuery();
 
+            //in case an error happens, we start with a -1
             int acStateInt = -1;
 
             while(rs.next()){
@@ -70,13 +72,13 @@ public class MSSQLDatabase
 
             boolean acState;
 
+            //java can't case an int to a boolean so we have to do this everytime we want to convert
             if(acStateInt == 0){
                 acState = false;
             }
             else {
                 acState = true;
             }
-
 
             //DEHUM
             cstmt = getConnection().prepareCall("{call dbo.spDehumidifier_GetByGymID(?)}");
@@ -184,27 +186,5 @@ public class MSSQLDatabase
         }
 
         return null;
-    }
-
-
-
-    void insertTemp(Temperature temp){
-
-        CallableStatement cstmt;
-
-        try{
-            cstmt = getConnection().prepareCall("{call dbo.spInsert_Temperature}");
-
-            cstmt.setFloat("Temperature", temp.getTemp());
-            cstmt.setDate("Date", temp.getDate());
-            cstmt.setTimestamp("Time", temp.getTime());
-            cstmt.setInt("Gym_ID", temp.getGymId());
-
-            cstmt.execute();
-        }
-        catch (SQLException throwables)
-        {
-            Logger.getLogger(MSSQLDatabase.class.getName()).log(Level.SEVERE, null, throwables);
-        }
     }
 }

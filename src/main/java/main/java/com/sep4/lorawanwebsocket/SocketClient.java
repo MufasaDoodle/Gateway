@@ -83,22 +83,25 @@ public class SocketClient implements WebSocket.Listener
         {
             e.printStackTrace();
         }
-        System.out.println(indented);
 
         Gson gson = new Gson();
         Message message = gson.fromJson(indented, Message.class);
 
         if(message.cmd.equals("rx")){
+            //grabbing the hexvalues of the different measurements
             String humHex = message.data.substring(0,4);
             String tempHex = message.data.substring(4,8);
             String co2Hex = message.data.substring(8,12);
+
+            //Getting the time given by the relay
             Time t = new Time(message.ts);
             Time t2 = new Time(t.getHours(), t.getMinutes(), 0);
             //using deprecated methods because the other solutions are even worse
             //reason for doing this is that the data team doesn't want seconds or milliseconds
-            System.out.println(t2.toString());
+
             Date date = new Date(message.ts);
 
+            //converting the hex values to decimal values
             float temp = Float.parseFloat(ConvHelper.convertHexToDecimal(tempHex));
             float hum = Float.parseFloat(ConvHelper.convertHexToDecimal(humHex));
             float co2 = Float.parseFloat(ConvHelper.convertHexToDecimal(co2Hex));
@@ -107,8 +110,10 @@ public class SocketClient implements WebSocket.Listener
 
             try
             {
+                //insert measurement into the database
                 MSSQLDatabase.getInstance().insertMeasurement(measurement);
 
+                //Will try to transmit the states of the AC, humidifier, dehumidifier and window to the hardware
                 sendStates();
             }
             catch (SQLException throwables)
@@ -125,15 +130,18 @@ public class SocketClient implements WebSocket.Listener
     {
         try
         {
+            //grabs the states from the database as hexvalues
             String hex = MSSQLDatabase.getInstance().getStatesHEX();
 
             if(hex == null){
+                //something went wrong with getting the states from database, so bail out
                 return;
             }
 
-            //TODO get the right port number
+            //initialize a downlinkmessage with the hex string
             DownLinkMessage message = new DownLinkMessage("tx", "0004A30B00219CB5", 2, false, hex);
 
+            //network server wants json
             Gson gson = new Gson();
             String json = gson.toJson(message);
 
