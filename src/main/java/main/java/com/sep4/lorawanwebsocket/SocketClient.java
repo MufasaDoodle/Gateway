@@ -87,19 +87,19 @@ public class SocketClient implements WebSocket.Listener
         Gson gson = new Gson();
         Message message = gson.fromJson(indented, Message.class);
 
-        if(message.cmd.equals("rx")){
+        if(message.getCmd().equals("rx")){
             //grabbing the hexvalues of the different measurements
-            String humHex = message.data.substring(0,4);
-            String tempHex = message.data.substring(4,8);
-            String co2Hex = message.data.substring(8,12);
+            String humHex = message.getData().substring(0,4);
+            String tempHex = message.getData().substring(4,8);
+            String co2Hex = message.getData().substring(8,12);
 
             //Getting the time given by the relay
-            Time t = new Time(message.ts);
+            Time t = new Time(message.getTs());
             Time t2 = new Time(t.getHours(), t.getMinutes(), 0);
             //using deprecated methods because the other solutions are even worse
             //reason for doing this is that the data team doesn't want seconds or milliseconds
 
-            Date date = new Date(message.ts);
+            Date date = new Date(message.getTs());
 
             //converting the hex values to decimal values
             float temp = Float.parseFloat(ConvHelper.convertHexToDecimal(tempHex));
@@ -127,21 +127,6 @@ public class SocketClient implements WebSocket.Listener
 
         webSocket.request(1);
         return new CompletableFuture().completedFuture("onText() completed.").thenAccept(System.out::println);
-    }
-
-    public void testThingy(Measurement measurement){
-        try
-        {
-            //insert measurement into the database
-            //MSSQLDatabase.getInstance().insertMeasurement(measurement);
-
-            //checks all the automation settings and changes states according to the measurement we just received
-            handleAutomation(measurement);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
     }
 
     private void handleAutomation(Measurement measurement)

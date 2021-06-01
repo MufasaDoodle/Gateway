@@ -6,12 +6,12 @@ import java.sql.Timestamp;
 
 public class Measurement
 {
-    int Gym_Id;
-    Time time;
-    Date date;
-    float Temperature;
-    float Humidity;
-    float CO2Level;
+    private int Gym_Id;
+    private Time time;
+    private Date date;
+    private float Temperature;
+    private float Humidity;
+    private float CO2Level;
 
     public Measurement(int gym_Id, Time time, Date date, float temperature, float humidity, float CO2Level)
     {

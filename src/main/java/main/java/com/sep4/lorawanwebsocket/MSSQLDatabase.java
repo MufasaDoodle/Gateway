@@ -28,7 +28,7 @@ public class MSSQLDatabase
         return DriverManager.getConnection(connectionUrl, "admin", "sep4db2020");
     }
 
-    void insertMeasurement(Measurement measurement){
+    public void insertMeasurement(Measurement measurement){
 
         CallableStatement cstmt;
         System.out.println(measurement.toString()); //for debugging purposes TODO remove
@@ -52,7 +52,7 @@ public class MSSQLDatabase
     }
 
     // This method returns the states of the AC, humidifier, dehumidifer and window from the database as hex
-    String getStatesHEX(){
+    public String getStatesHEX(){
         CallableStatement cstmt;
 
         try{
@@ -218,7 +218,7 @@ public class MSSQLDatabase
                 changeACState(true);
             }
             else if(temperature < target){
-                System.out.println("Temperature is low");
+                System.out.println("Temperature is fine");
                 changeACState(false);
             }
         }

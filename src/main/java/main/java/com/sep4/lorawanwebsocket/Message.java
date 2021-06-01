@@ -2,17 +2,17 @@ package main.java.com.sep4.lorawanwebsocket;
 
 public class Message
 {
-    String cmd;
-    String EUI;
-    long ts;
-    boolean ack;
-    int fcnt;
-    int port;
-    String data;
-    long freq;
-    String dr;
-    int rssi;
-    float snr;
+    private String cmd;
+    private String EUI;
+    private long ts;
+    private boolean ack;
+    private int fcnt;
+    private int port;
+    private String data;
+    private long freq;
+    private String dr;
+    private int rssi;
+    private float snr;
 
     public Message(String cmd, String EUI, long ts, boolean ack, int fcnt, int port, String data, long freq, String dr, int rssi, float snr)
     {
