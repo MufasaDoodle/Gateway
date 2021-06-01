@@ -31,7 +31,6 @@ public class MSSQLDatabase
     public void insertMeasurement(Measurement measurement){
 
         CallableStatement cstmt;
-        System.out.println(measurement.toString()); //for debugging purposes TODO remove
 
         try{
             cstmt = getConnection().prepareCall("{call dbo.spInsert_Measurement(?,?,?,?,?,?)}");
